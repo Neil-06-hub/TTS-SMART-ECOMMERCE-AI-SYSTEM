@@ -1,24 +1,21 @@
-import { Card, Rate, Tag, Button, message } from "antd";
-import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
+import { Rate, message, Tooltip } from "antd";
+import { HeartOutlined, ShoppingCartOutlined, ThunderboltFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useCartStore, useAuthStore } from "../../store/useStore";
 import { aiAPI } from "../../api";
 
-const { Meta } = Card;
-
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, matchPercent }) => {
   const navigate = useNavigate();
   const { addItem } = useCartStore();
   const { isAuthenticated } = useAuthStore();
 
   const formatPrice = (price) =>
-    new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+    new Intl.NumberFormat("vi-VN").format(price) + "đ";
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
     addItem(product);
-    message.success(`Đã thêm "${product.name}" vào giỏ hàng!`);
-    // Track activity
+    message.success("Đã thêm \"" + product.name + "\" vào giỏ hàng!");
     if (isAuthenticated) {
       aiAPI.trackActivity({ productId: product._id, action: "add_cart" }).catch(() => {});
     }
@@ -29,68 +26,130 @@ const ProductCard = ({ product }) => {
     : 0;
 
   return (
-    <Card
+    <div
       className="product-card"
-      hoverable
-      onClick={() => navigate(`/products/${product._id}`)}
-      cover={
-        <div style={{ position: "relative", overflow: "hidden", height: 220 }}>
-          <img
-            src={product.image}
-            alt={product.name}
-            style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s" }}
-            onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-            onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
-          />
-          {discount > 0 && (
-            <Tag color="red" style={{ position: "absolute", top: 8, left: 8, fontWeight: 700 }}>
-              -{discount}%
-            </Tag>
+      onClick={() => navigate("/products/" + product._id)}
+      style={{
+        background: "var(--bg-card)", borderRadius: 20,
+        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+        overflow: "hidden", cursor: "pointer",
+        position: "relative", border: "1px solid var(--border-color)",
+        display: "flex", flexDirection: "column", height: "100%"
+      }}
+    >
+      {/* Image Container */}
+      <div style={{ position: "relative", height: 220, background: "var(--bg-main)", overflow: "hidden" }}>
+        <img
+          src={product.image || "https://placehold.co/400x400/f1f5f9/a1a1aa?text=Product"} alt={product.name}
+          style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }}
+          className="hover:scale-105"
+        />
+        
+        {/* Match Percentage Overlay (If recommended) */}
+        {matchPercent && (
+           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 40, background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)", pointerEvents: "none" }} />
+        )}
+        
+        {/* Top Badges */}
+        <div style={{ position: "absolute", top: 12, left: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          {matchPercent ? (
+             <Tooltip title="AI khuyên dùng dựa trên sở thích của bạn">
+                <div className="bg-gradient-ai" style={{ color: "white", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999, display: "flex", alignItems: "center", gap: 4, boxShadow: "0 4px 10px rgba(236, 72, 153, 0.3)" }}>
+                  <ThunderboltFilled /> {matchPercent}% Phù hợp
+                </div>
+             </Tooltip>
+          ) : product.rating >= 4.8 && (
+             <div style={{ background: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(4px)", color: "#EAB308", border: "1px solid rgba(234, 179, 8, 0.2)", fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 999, display: "inline-flex", width: "fit-content" }}>
+                ⭐ Top Rated
+             </div>
           )}
-          {product.stock === 0 && (
-            <div style={{
-              position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              <Tag color="default" style={{ fontSize: 14 }}>Hết hàng</Tag>
+          
+          {discount > 0 && (
+            <div style={{ background: "#EF4444", color: "white", fontSize: 12, fontWeight: 700, padding: "4px 10px", borderRadius: 999, display: "inline-flex", width: "fit-content" }}>
+              -{discount}%
             </div>
           )}
         </div>
-      }
-      actions={[
-        <Button
-          key="cart" type="primary" icon={<ShoppingCartOutlined />}
-          onClick={handleAddToCart} disabled={product.stock === 0}
-          style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", border: "none" }}
+
+        {/* Wishlist Heart */}
+        <div
+          onClick={(e) => { e.stopPropagation(); /* Add wishlist logic here later */ message.info("Đã lưu vào danh sách yêu thích"); }}
+          style={{
+            position: "absolute", top: 12, right: 12,
+            width: 36, height: 36, borderRadius: "50%",
+            background: "white", display: "flex", alignItems: "center",
+            justifyContent: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", cursor: "pointer",
+            transition: "all 0.2s ease", color: "var(--text-muted)"
+          }}
+          className="hover:text-pink-500 hover:scale-110"
         >
-          Thêm vào giỏ
-        </Button>,
-        <Button key="view" icon={<EyeOutlined />} onClick={() => navigate(`/products/${product._id}`)}>
-          Xem
-        </Button>,
-      ]}
-      style={{ borderRadius: 12, overflow: "hidden" }}
-      bodyStyle={{ padding: "12px 16px" }}
-    >
-      <Tag color="purple" style={{ marginBottom: 6, fontSize: 11 }}>{product.category}</Tag>
-      <Meta
-        title={
-          <span style={{ fontSize: 14, fontWeight: 600, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-            {product.name}
-          </span>
-        }
-      />
-      <div style={{ marginTop: 8 }}>
-        <Rate disabled defaultValue={product.rating} style={{ fontSize: 12 }} />
-        <span style={{ fontSize: 12, color: "#999", marginLeft: 4 }}>({product.numReviews})</span>
-      </div>
-      <div style={{ marginTop: 6 }}>
-        <span className="price-tag">{formatPrice(product.price)}</span>
-        {product.originalPrice > product.price && (
-          <span className="price-original" style={{ marginLeft: 8 }}>{formatPrice(product.originalPrice)}</span>
+          <HeartOutlined style={{ fontSize: 18 }} />
+        </div>
+
+        {/* Out of Stock Overlay */}
+        {product.stock === 0 && (
+          <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(2px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10 }}>
+            <span style={{ background: "var(--text-main)", color: "white", fontWeight: 700, fontSize: 14, padding: "8px 20px", borderRadius: 999 }}>Tạm Hết Hàng</span>
+          </div>
         )}
       </div>
-    </Card>
+
+      {/* Content Area */}
+      <div style={{ padding: "20px", display: "flex", flexDirection: "column", flex: 1, position: "relative" }}>
+        {/* Category/Brand Tag (Optional mock) */}
+        <div style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+           {product.category || "Sản Phẩm"}
+        </div>
+        
+        {/* Product Name */}
+        <div style={{
+          fontWeight: 700, fontSize: 16, color: "var(--text-main)",
+          display: "-webkit-box", WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical", overflow: "hidden",
+          lineHeight: 1.4, marginBottom: 12, flex: 1
+        }}>
+          {product.name}
+        </div>
+
+        {/* Rating */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16 }}>
+          <Rate disabled defaultValue={product.rating || 4.5} style={{ fontSize: 13, color: "#F59E0B" }} />
+          <span style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 500 }}>({product.numReviews || 0})</span>
+        </div>
+
+        {/* Price & Cart Container */}
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: "auto" }}>
+           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {product.originalPrice > product.price && (
+                 <span style={{ color: "var(--text-muted)", textDecoration: "line-through", fontSize: 13, fontWeight: 500 }}>
+                    {formatPrice(product.originalPrice)}
+                 </span>
+              )}
+              <span style={{ color: "var(--brand-teal)", fontWeight: 800, fontSize: 20, lineHeight: 1 }}>
+                 {formatPrice(product.price)}
+              </span>
+           </div>
+           
+           {/* Modern Cart Button */}
+           <button
+             onClick={handleAddToCart}
+             disabled={product.stock === 0}
+             style={{
+               width: 44, height: 44, borderRadius: 14,
+               background: product.stock === 0 ? "var(--border-color)" : "var(--brand-teal)",
+               border: "none", color: "white",
+               display: "flex", alignItems: "center", justifyContent: "center",
+               cursor: product.stock === 0 ? "not-allowed" : "pointer", fontSize: 20,
+               transition: "all 0.2s ease",
+               boxShadow: product.stock === 0 ? "none" : "0 4px 12px rgba(13, 148, 136, 0.2)",
+             }}
+             className={product.stock > 0 ? "hover:bg-teal-500 hover:-translate-y-1" : ""}
+           >
+             <ShoppingCartOutlined />
+           </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
