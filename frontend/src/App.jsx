@@ -28,6 +28,7 @@ import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
 import Marketing from "./pages/admin/Marketing";
 import AdminUsers from "./pages/admin/Users";
+import AdminDiscounts from "./pages/admin/Discounts";
 
 // Protected Route Components
 const ProtectedRoute = ({ children }) => {
@@ -86,6 +87,7 @@ function App() {
         <Route path="products" element={<AdminProducts />} />
         <Route path="orders" element={<AdminOrders />} />
         <Route path="users" element={<AdminUsers />} />
+        <Route path="discounts" element={<AdminDiscounts />} />
         <Route path="marketing" element={<Marketing />} />
       </Route>
 

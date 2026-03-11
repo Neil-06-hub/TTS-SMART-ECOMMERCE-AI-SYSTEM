@@ -89,6 +89,15 @@ export const adminAPI = {
   updateOrderStatus: (id, data) => api.put(`/admin/orders/${id}/status`, data),
   // Users
   getUsers: () => api.get("/admin/users"),
+  updateUser: (id, data) => api.put(`/admin/users/${id}`, data),
+  deleteUser: (id) => api.delete(`/admin/users/${id}`),
+  toggleBlockUser: (id) => api.patch(`/admin/users/${id}/toggle-block`),
+  // Discounts
+  getDiscounts: () => api.get("/admin/discounts"),
+  createDiscount: (data) => api.post("/admin/discounts", data),
+  updateDiscount: (id, data) => api.put(`/admin/discounts/${id}`, data),
+  deleteDiscount: (id) => api.delete(`/admin/discounts/${id}`),
+  toggleDiscount: (id) => api.patch(`/admin/discounts/${id}/toggle`),
   // Marketing
   getMarketingLogs: (params) => api.get("/admin/marketing/logs", { params }),
   triggerMarketing: (campaignType) => api.post("/admin/marketing/trigger", { campaignType }),

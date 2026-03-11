@@ -12,6 +12,7 @@ const protect = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.id).select("-password");
     if (!req.user) return res.status(401).json({ success: false, message: "Người dùng không tồn tại" });
+    if (req.user.isBlocked) return res.status(403).json({ success: false, message: "Tài khoản của bạn đã bị khóa" });
     next();
   } catch (err) {
     res.status(401).json({ success: false, message: "Token không hợp lệ" });

@@ -77,7 +77,7 @@ const AdminProducts = () => {
   const columns = [
     { title: "Ảnh", dataIndex: "image", render: (img) => <Image src={img} width={50} height={50} style={{ objectFit: "cover", borderRadius: 6 }} /> },
     { title: "Tên sản phẩm", dataIndex: "name", ellipsis: true, width: 200 },
-    { title: "Danh mục", dataIndex: "category", render: (c) => <Tag color="purple">{c}</Tag> },
+    { title: "Danh mục", dataIndex: "category", render: (c) => <Tag color="orange">{c}</Tag> },
     { title: "Giá", dataIndex: "price", render: formatPrice },
     { title: "Tồn kho", dataIndex: "stock", render: (s) => <Tag color={s > 0 ? "green" : "red"}>{s}</Tag> },
     { title: "Đã bán", dataIndex: "sold", render: (s) => s || 0 },
@@ -102,7 +102,7 @@ const AdminProducts = () => {
         <Space>
           <Input.Search placeholder="Tìm sản phẩm..." onSearch={setSearch} style={{ width: 240 }} allowClear />
           <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}
-            style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", border: "none" }}>
+            style={{ background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", border: "none" }}>
             Thêm sản phẩm
           </Button>
         </Space>
@@ -172,7 +172,7 @@ const AdminProducts = () => {
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
             <Button onClick={() => setIsModalOpen(false)}>Hủy</Button>
             <Button type="primary" htmlType="submit" loading={loading}
-              style={{ background: "#667eea", border: "none" }}>
+              style={{ background: "#f97316", border: "none" }}>
               {editingProduct ? "Cập nhật" : "Tạo sản phẩm"}
             </Button>
           </div>

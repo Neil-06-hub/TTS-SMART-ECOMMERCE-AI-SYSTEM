@@ -16,6 +16,8 @@ const userSchema = new mongoose.Schema(
     preferences: [{ type: String }],
     // Danh sách sản phẩm yêu thích
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    // Khóa tài khoản
+    isBlocked: { type: Boolean, default: false },
     // Theo dõi trạng thái cart bỏ quên để trigger Marketing
     cartAbandonedAt: { type: Date, default: null },
     cartAbandonedNotified: { type: Boolean, default: false },

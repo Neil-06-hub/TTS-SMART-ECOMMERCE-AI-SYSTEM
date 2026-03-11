@@ -246,6 +246,52 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+// @desc  Cập nhật thông tin người dùng
+// @route PUT /api/admin/users/:id
+const updateUser = async (req, res) => {
+  try {
+    const { name, email, phone, address, role } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { name, email, phone, address, role },
+      { new: true, runValidators: true }
+    ).select("-password");
+    if (!user) return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
+    res.json({ success: true, message: "Cập nhật thành công", user });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// @desc  Xóa tài khoản người dùng
+// @route DELETE /api/admin/users/:id
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
+    if (user.role === "admin") return res.status(400).json({ success: false, message: "Không thể xóa tài khoản Admin" });
+    await user.deleteOne();
+    res.json({ success: true, message: "Đã xóa tài khoản người dùng" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// @desc  Khóa/Mở khóa tài khoản
+// @route PATCH /api/admin/users/:id/toggle-block
+const toggleBlockUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
+    if (user.role === "admin") return res.status(400).json({ success: false, message: "Không thể khóa tài khoản Admin" });
+    user.isBlocked = !user.isBlocked;
+    await user.save();
+    res.json({ success: true, message: user.isBlocked ? "Đã khóa tài khoản" : "Đã mở khóa tài khoản", user });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 // ===================== MARKETING =====================
 
 // @desc  Lấy lịch sử marketing
@@ -295,6 +341,6 @@ module.exports = {
   getDashboardStats, getAIAnalysis,
   getAllProducts, createProduct, updateProduct, deleteProduct,
   getAllOrders, updateOrderStatus,
-  getAllUsers,
+  getAllUsers, updateUser, deleteUser, toggleBlockUser,
   getMarketingLogs, triggerMarketing,
 };

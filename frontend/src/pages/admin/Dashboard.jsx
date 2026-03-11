@@ -17,7 +17,7 @@ const BarChart = ({ data }) => {
       {data.map((d, i) => (
         <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
           <div style={{
-            width: "100%", background: `linear-gradient(180deg, #667eea, #764ba2)`,
+            width: "100%", background: `linear-gradient(180deg, #f97316, #ea580c)`,
             height: `${(d.revenue / max) * 100}px`, borderRadius: "4px 4px 0 0",
             minHeight: d.revenue > 0 ? 4 : 0, cursor: "pointer",
             transition: "opacity 0.2s",
@@ -60,7 +60,7 @@ const Dashboard = () => {
     : 0;
 
   const statCards = [
-    { title: "Tổng người dùng", value: stats?.totalUsers, icon: <UserOutlined />, color: "#667eea" },
+    { title: "Tổng người dùng", value: stats?.totalUsers, icon: <UserOutlined />, color: "#f97316" },
     { title: "Sản phẩm active", value: stats?.totalProducts, icon: <ShoppingOutlined />, color: "#52c41a" },
     { title: "Tổng đơn hàng", value: stats?.totalOrders, icon: <ShoppingCartOutlined />, color: "#fa8c16" },
     { title: "Tổng doanh thu", value: formatPrice(stats?.totalRevenue), icon: <DollarOutlined />, color: "#eb2f96", isPrice: true },
@@ -73,7 +73,7 @@ const Dashboard = () => {
         <Button
           type="primary" icon={<BulbOutlined />} loading={aiLoading}
           onClick={handleAIAnalysis}
-          style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", border: "none" }}
+          style={{ background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", border: "none" }}
         >
           Phân tích AI
         </Button>
@@ -97,9 +97,9 @@ const Dashboard = () => {
 
       {/* AI Analysis */}
       {aiAnalysis && (
-        <Card style={{ borderRadius: 12, marginBottom: 24, borderLeft: "4px solid #667eea" }}>
+        <Card style={{ borderRadius: 12, marginBottom: 24, borderLeft: "4px solid #f97316" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-            <BulbOutlined style={{ color: "#667eea", fontSize: 20 }} />
+            <BulbOutlined style={{ color: "#f97316", fontSize: 20 }} />
             <Title level={5} style={{ margin: 0 }}>Nhận xét AI về tình hình kinh doanh</Title>
             <Tag color="purple">AI Generated</Tag>
           </div>
@@ -141,7 +141,7 @@ const Dashboard = () => {
             <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between" }}>
               <div>
                 <Text type="secondary" style={{ fontSize: 12 }}>Tháng này</Text>
-                <div style={{ fontWeight: 700, color: "#667eea" }}>{formatPrice(stats?.thisMonthRevenue)}</div>
+                <div style={{ fontWeight: 700, color: "#f97316" }}>{formatPrice(stats?.thisMonthRevenue)}</div>
               </div>
               <div style={{ textAlign: "right" }}>
                 <Text type="secondary" style={{ fontSize: 12 }}>Tháng trước</Text>

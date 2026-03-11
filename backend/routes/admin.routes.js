@@ -6,7 +6,7 @@ const {
   getDashboardStats, getAIAnalysis,
   getAllProducts, createProduct, updateProduct, deleteProduct,
   getAllOrders, updateOrderStatus,
-  getAllUsers,
+  getAllUsers, updateUser, deleteUser, toggleBlockUser,
   getMarketingLogs, triggerMarketing,
 } = require("../controllers/admin.controller");
 
@@ -28,6 +28,9 @@ router.put("/orders/:id/status", updateOrderStatus);
 
 // Users
 router.get("/users", getAllUsers);
+router.put("/users/:id", updateUser);
+router.delete("/users/:id", deleteUser);
+router.patch("/users/:id/toggle-block", toggleBlockUser);
 
 // Marketing
 router.get("/marketing/logs", getMarketingLogs);

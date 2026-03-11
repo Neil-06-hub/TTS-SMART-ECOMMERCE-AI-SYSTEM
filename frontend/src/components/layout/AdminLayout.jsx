@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { Layout, Menu, Avatar, Dropdown, theme } from "antd";
 import {
   DashboardOutlined, AppstoreOutlined, OrderedListOutlined,
-  TeamOutlined, NotificationOutlined, LogoutOutlined, UserOutlined, ShopOutlined,
+  TeamOutlined, NotificationOutlined, LogoutOutlined, UserOutlined, ShopOutlined, TagOutlined,
 } from "@ant-design/icons";
 import { useAuthStore } from "../../store/useStore";
 
@@ -14,6 +14,7 @@ const menuItems = [
   { key: "/admin/products", icon: <AppstoreOutlined />, label: <Link to="/admin/products">Sản phẩm</Link> },
   { key: "/admin/orders", icon: <OrderedListOutlined />, label: <Link to="/admin/orders">Đơn hàng</Link> },
   { key: "/admin/users", icon: <TeamOutlined />, label: <Link to="/admin/users">Khách hàng</Link> },
+  { key: "/admin/discounts", icon: <TagOutlined />, label: <Link to="/admin/discounts">Mã giảm giá</Link> },
   { key: "/admin/marketing", icon: <NotificationOutlined />, label: <Link to="/admin/marketing">Marketing AI</Link> },
 ];
 
@@ -40,9 +41,9 @@ const AdminLayout = () => {
       >
         <div style={{
           height: 64, display: "flex", alignItems: "center", justifyContent: "center",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
         }}>
-          <ShopOutlined style={{ color: "#ffd700", fontSize: 20 }} />
+          <ShopOutlined style={{ color: "white", fontSize: 20 }} />
           {!collapsed && (
             <span style={{ color: "white", fontWeight: 700, fontSize: 16, marginLeft: 8 }}>
               Admin Panel
@@ -64,12 +65,16 @@ const AdminLayout = () => {
         }}>
           <Dropdown menu={userMenu} placement="bottomRight" trigger={["click"]}>
             <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}>
-              <Avatar icon={<UserOutlined />} style={{ background: "#667eea" }} />
+              <Avatar
+                src={user?.avatar}
+                icon={!user?.avatar && <UserOutlined />}
+                style={{ background: "linear-gradient(135deg, #f97316, #ea580c)" }}
+              />
               <span style={{ fontWeight: 500 }}>{user?.name}</span>
             </div>
           </Dropdown>
         </Header>
-        <Content style={{ margin: "24px", background: "#f5f5f5", minHeight: 280 }}>
+        <Content style={{ margin: "24px", background: "#F8FAFC", minHeight: 280 }}>
           <Outlet />
         </Content>
       </Layout>
