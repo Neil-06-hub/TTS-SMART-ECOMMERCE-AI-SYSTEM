@@ -10,8 +10,12 @@ const userSchema = new mongoose.Schema(
     avatar: { type: String, default: "" },
     phone: { type: String, default: "" },
     address: { type: String, default: "" },
+    dob: { type: Date, default: null },
+    gender: { type: String, enum: ["Nam", "Nữ", "Khác", ""], default: "" },
     // Tags sở thích dùng cho AI Recommendation
     preferences: [{ type: String }],
+    // Danh sách sản phẩm yêu thích
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     // Theo dõi trạng thái cart bỏ quên để trigger Marketing
     cartAbandonedAt: { type: Date, default: null },
     cartAbandonedNotified: { type: Boolean, default: false },

@@ -5,6 +5,7 @@ const MarketingLog = require("../models/MarketingLog");
 const { cloudinary, upload } = require("../config/cloudinary");
 const { analyzeBusinessWithAI } = require("../services/gemini.service");
 const { triggerMarketingCampaign } = require("../services/marketing.service");
+const { createNotification } = require("./notification.controller");
 
 // ===================== DASHBOARD =====================
 
@@ -122,6 +123,20 @@ const createProduct = async (req, res) => {
       image,
       featured: featured === "true" || featured === true,
     });
+    // Gửi notification cho users có preferences trùng với tags sản phẩm
+    const productTags = typeof tags === "string" ? tags.split(",").map((t) => t.trim()) : tags || [];
+    if (productTags.length > 0) {
+      const interestedUsers = await User.find({ role: "customer", preferences: { $in: productTags } }).select("_id");
+      interestedUsers.forEach((u) => {
+        createNotification(u._id, {
+          type: "new_product",
+          title: "Sản phẩm mới phù hợp với bạn! 🛍️",
+          message: `"${name}" vừa được thêm vào cửa hàng - có thể bạn sẽ thích!`,
+          link: `/products/${product._id}`,
+        });
+      });
+    }
+
     res.status(201).json({ success: true, message: "Tạo sản phẩm thành công", product });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -200,6 +215,18 @@ const updateOrderStatus = async (req, res) => {
     ).populate("user", "name email");
 
     if (!order) return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng" });
+
+    // Thông báo cho người dùng về trạng thái đơn hàng
+    const statusLabels = { pending: "Chờ xử lý", processing: "Đang xử lý", shipped: "Đang giao hàng", delivered: "Đã giao hàng", cancelled: "Đã hủy" };
+    if (orderStatus && order.user) {
+      createNotification(order.user._id, {
+        type: "order",
+        title: `Đơn hàng cập nhật: ${statusLabels[orderStatus] || orderStatus}`,
+        message: `Đơn hàng của bạn đã được cập nhật trạng thái sang "${statusLabels[orderStatus] || orderStatus}".`,
+        link: `/orders/${order._id}`,
+      });
+    }
+
     res.json({ success: true, message: "Cập nhật trạng thái thành công", order });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -245,6 +272,19 @@ const triggerMarketing = async (req, res) => {
   try {
     const { campaignType } = req.body;
     const result = await triggerMarketingCampaign(campaignType);
+
+    // Gửi notification promotion cho tất cả khách hàng
+    const campaignLabels = { newsletter: "Bản tin tuần mới", abandoned_cart: "Nhắc nhở giỏ hàng", promotion: "Khuyến mãi đặc biệt" };
+    const allCustomers = await User.find({ role: "customer" }).select("_id");
+    allCustomers.forEach((u) => {
+      createNotification(u._id, {
+        type: "promotion",
+        title: `${campaignLabels[campaignType] || "Thông báo khuyến mãi"} 🎁`,
+        message: "Có ưu đãi mới từ SmartShop AI dành cho bạn. Kiểm tra email để biết thêm chi tiết!",
+        link: "/shop",
+      });
+    });
+
     res.json({ success: true, message: "Chiến dịch đã được kích hoạt", result });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

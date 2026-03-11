@@ -28,6 +28,7 @@ const productSchema = new mongoose.Schema(
     numReviews: { type: Number, default: 0 },
     featured: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
+    specs: [{ name: String, value: String }],
   },
   { timestamps: true }
 );

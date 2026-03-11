@@ -2,6 +2,7 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Activity = require("../models/Activity");
 const User = require("../models/User");
+const { createNotification } = require("./notification.controller");
 
 // @desc  Tạo đơn hàng mới
 // @route POST /api/orders
@@ -56,6 +57,14 @@ const createOrder = async (req, res) => {
 
     // Reset cart abandoned tracking
     await User.findByIdAndUpdate(req.user._id, { cartAbandonedAt: null, cartAbandonedNotified: false });
+
+    // Gửi notification đặt hàng thành công
+    createNotification(req.user._id, {
+      type: "order",
+      title: "Đặt hàng thành công! 🎉",
+      message: `Đơn hàng của bạn gồm ${orderItems.length} sản phẩm, tổng ${new Intl.NumberFormat("vi-VN").format(totalAmount)}đ đã được đặt thành công.`,
+      link: `/orders/${order._id}`,
+    });
 
     res.status(201).json({ success: true, message: "Đặt hàng thành công", order });
   } catch (err) {

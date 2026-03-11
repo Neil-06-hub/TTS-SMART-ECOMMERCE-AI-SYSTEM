@@ -58,6 +58,22 @@ export const aiAPI = {
   trackActivity: (data) => api.post("/ai/track", data),
 };
 
+// Wishlist APIs
+export const wishlistAPI = {
+  get: () => api.get("/wishlist"),
+  getIds: () => api.get("/wishlist/ids"),
+  toggle: (productId) => api.post(`/wishlist/${productId}`),
+  remove: (productId) => api.delete(`/wishlist/${productId}`),
+};
+
+// Notification APIs
+export const notificationAPI = {
+  getAll: () => api.get("/notifications"),
+  readAll: () => api.put("/notifications/read-all"),
+  readOne: (id) => api.put(`/notifications/${id}/read`),
+  deleteOne: (id) => api.delete(`/notifications/${id}`),
+};
+
 // Admin APIs
 export const adminAPI = {
   // Dashboard

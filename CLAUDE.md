@@ -17,6 +17,8 @@ Full-stack e-commerce tích hợp AI (Google Gemini) cho gợi ý sản phẩm c
 - Soft delete sản phẩm: `isActive: false` thay vì xóa thật
 - Gemini response: strip markdown code blocks trước `JSON.parse()`
 - Admin routes bảo vệ bởi middleware `protect` + `adminOnly`
+- Wishlist: lưu trong `User.wishlist[]` (ObjectId refs), sync server ↔ `useWishlistStore` (localStorage) khi login qua `wishlistAPI.getIds()`
+- Notifications: `createNotification(userId, {type, title, message, link})` — helper export từ `notification.controller.js`
 
 ## Run Commands
 ```bash
@@ -33,7 +35,7 @@ Xem `backend/.env.example` — cần: `MONGO_URI`, `JWT_SECRET`, `GEMINI_API_KEY
 - `docs/runbooks/` — Hướng dẫn vận hành
 
 ## Sub-module Context
-- `backend/CLAUDE.md` — API, models, services, cron jobs
+- `backend/CLAUDE.md` — API routes (7 routes), models, services, cron jobs, notification helper
 - `backend/services/CLAUDE.md` — AI & Email services
-- `frontend/src/api/CLAUDE.md` — Axios API layer
-- `frontend/src/CLAUDE.md` — Components, pages, state
+- `frontend/src/api/CLAUDE.md` — Axios API layer (7 modules: auth, product, order, ai, wishlist, notification, admin)
+- `frontend/src/CLAUDE.md` — Components, pages, state (3 stores: auth, cart, wishlist)

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { productAPI, aiAPI } from "../api";
 import { useAuthStore } from "../store/useStore";
 import ProductCard from "../components/product/ProductCard";
+import { Area, Column } from "@ant-design/charts";
 
 const HeroBanner = ({ featuredProducts = [] }) => {
   const navigate = useNavigate();
@@ -19,47 +20,70 @@ const HeroBanner = ({ featuredProducts = [] }) => {
         <span style={{
           display: "inline-block",
           background: "linear-gradient(135deg, var(--brand-teal), var(--brand-teal-light))",
-          color: "white", padding: "6px 18px", borderRadius: 999, fontSize: 13, fontWeight: 600,
+          color: "white", padding: "8px 24px", borderRadius: 999, fontSize: 16, fontWeight: 600,
         }}>
-          ✦ Powered by Google Gemini AI
+          Powered by Google Gemini AI
         </span>
       </div>
       <h1 style={{ margin: 0, lineHeight: 1.15 }}>
-        <div style={{ fontSize: 56, fontWeight: 900, color: "var(--text-main)" }}>Mua Sắm Thông Minh</div>
-        <div style={{ fontSize: 56, fontWeight: 900 }} className="text-gradient-ai">Trải Nghiệm AI</div>
-        <div style={{ fontSize: 56, fontWeight: 900 }} className="text-gradient-teal">Cá Nhân Hóa 100%</div>
+        <div style={{ fontSize: 66, fontWeight: 900, color: "var(--text-main)" }}>Mua Sắm Thông Minh</div>
+        <div style={{ fontSize: 66, fontWeight: 900 }} className="text-gradient-ai">Trải Nghiệm AI</div>
+        <div style={{ fontSize: 66, fontWeight: 900 }} className="text-gradient-teal">Cá Nhân Hóa 100%</div>
       </h1>
-      <p style={{ color: "var(--text-muted)", fontSize: 17, margin: "20px auto 36px", maxWidth: 560 }}>
+      <p style={{ color: "var(--text-muted)", fontSize: 20, margin: "24px auto 40px", maxWidth: 680 }}>
         Hệ thống AI phân tích sở thích của bạn để gợi ý sản phẩm hoàn hảo. Marketing tự động, trải nghiệm mua sắm không giới hạn.
       </p>
       <div style={{ display: "flex", gap: 16, justifyContent: "center", marginBottom: 60 }}>
-        <Button size="large" onClick={() => navigate("/shop")} className="bg-gradient-ai" style={{ border: "none", color: "white", borderRadius: 999, fontWeight: 700, height: 52, padding: "0 32px", fontSize: 16 }}>
+        <Button size="large" onClick={() => navigate("/shop")} className="bg-gradient-ai" style={{ border: "none", color: "white", borderRadius: 999, fontWeight: 700, height: 60, padding: "0 40px", fontSize: 18 }}>
           Khám Phá Ngay →
         </Button>
-        <Button size="large" style={{ background: "transparent", border: "2px solid var(--ai-purple)", color: "var(--ai-purple)", borderRadius: 999, fontWeight: 700, height: 52, padding: "0 32px", fontSize: 16 }}>
+        <Button size="large" style={{ background: "transparent", border: "2px solid var(--ai-purple)", color: "var(--ai-purple)", borderRadius: 999, fontWeight: 700, height: 60, padding: "0 40px", fontSize: 18 }}>
           Xem Demo AI ⊙
         </Button>
       </div>
       
       {preview.length > 0 && (
-        <div style={{ position: "relative", height: 320, display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+        <div style={{ position: "relative", height: 380, display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+          {/* Định nghĩa keyframes animation float */}
+          <style>
+            {`
+              @keyframes floatHeroCard {
+                0% { transform: translateX(-50%) translateY(0px) scale(var(--scale)) rotate(var(--rot)); }
+                50% { transform: translateX(-50%) translateY(-12px) scale(var(--scale)) rotate(var(--rot)); }
+                100% { transform: translateX(-50%) translateY(0px) scale(var(--scale)) rotate(var(--rot)); }
+              }
+              .hero-card-anim {
+                animation: floatHeroCard 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+              }
+              .hero-card-anim:hover {
+                animation-play-state: paused;
+                transform: translateX(-50%) translateY(-16px) scale(1.05) rotate(0deg) !important;
+                z-index: 10 !important;
+                transition: transform 0.3s ease;
+              }
+            `}
+          </style>
           {preview.map((product, i) => (
-            <div key={product._id} style={{
+            <div key={product._id} className="hero-card-anim" style={{
+              "--scale": scales[i],
+              "--rot": `${rotations[i]}deg`,
               position: "absolute",
-              left: "calc(50% + " + offsets[i] + "px)",
+              left: `calc(50% + ${offsets[i]}px)`,
               transform: `translateX(-50%) scale(${scales[i]}) rotate(${rotations[i]}deg)`,
-              zIndex: zIndexes[i], width: 220, background: "white", borderRadius: 20,
-              boxShadow: i === 1 ? "0 20px 60px rgba(0,0,0,0.15)" : "0 8px 24px rgba(0,0,0,0.1)",
+              animationDelay: `${i * 0.5}s`,
+              zIndex: zIndexes[i], width: 255, background: "white", borderRadius: 20,
+              boxShadow: i === 1 ? "0 25px 65px rgba(0,0,0,0.18)" : "0 10px 30px rgba(0,0,0,0.12)",
               overflow: "hidden", cursor: "pointer",
-              border: "1px solid var(--border-color)"
+              border: "1px solid var(--border-color)",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
             }}>
-              <div style={{ position: "relative", height: 170, background: "#F1F5F9" }}>
+              <div style={{ position: "relative", height: 205, background: "#F1F5F9" }}>
                 <img src={product.image || "https://placehold.co/400x400/f1f5f9/a1a1aa?text=Image"} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                <span className="bg-gradient-ai" style={{ position: "absolute", top: 10, left: 10, color: "white", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 999 }}>✦ AI Pick</span>
+                <span className="bg-gradient-ai" style={{ position: "absolute", top: 12, left: 12, color: "white", fontSize: 13, fontWeight: 700, padding: "4px 12px", borderRadius: 999 }}>AI Pick</span>
               </div>
-              <div style={{ padding: "12px 14px", textAlign: "left" }}>
-                <div style={{ fontWeight: 700, fontSize: 13, color: "var(--text-main)", marginBottom: 4, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{product.name}</div>
-                <div style={{ color: "var(--brand-teal)", fontWeight: 700, fontSize: 15 }}>{new Intl.NumberFormat("vi-VN").format(product.price)}đ</div>
+              <div style={{ padding: "16px 18px", textAlign: "left" }}>
+                <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text-main)", marginBottom: 6, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{product.name}</div>
+                <div style={{ color: "var(--brand-teal)", fontWeight: 700, fontSize: 17 }}>{new Intl.NumberFormat("vi-VN").format(product.price)}đ</div>
               </div>
             </div>
           ))}
@@ -69,12 +93,80 @@ const HeroBanner = ({ featuredProducts = [] }) => {
   );
 };
 
-const AIFeaturesSection = () => (
+const AIFeaturesSection = () => {
+  // Chart 1: Phân bố khách hàng (Demographics) - matches the wave/density plot
+  const demoData = [
+    { age: "18-24", gender: "Nữ", count: 25 },
+    { age: "18-24", gender: "Nam", count: 15 },
+    { age: "25-34", gender: "Nữ", count: 55 },
+    { age: "25-34", gender: "Nam", count: 40 },
+    { age: "35-44", gender: "Nữ", count: 20 },
+    { age: "35-44", gender: "Nam", count: 35 },
+    { age: "45-54", gender: "Nữ", count: 15 },
+    { age: "45-54", gender: "Nam", count: 20 },
+    { age: "55+", gender: "Nữ", count: 5 },
+    { age: "55+", gender: "Nam", count: 10 },
+  ];
+  
+  const demoConfig = {
+    data: demoData,
+    xField: "age",
+    yField: "count",
+    colorField: "gender",
+    shapeField: "smooth",
+    smooth: true,
+    height: 120,
+    autoFit: true,
+    color: ["#f97316", "#3b82f6"], // Orange for Nữ, Blue for Nam
+    xAxis: { label: { style: { fontSize: 10 } }, line: null, tickLine: null, grid: null },
+    yAxis: { label: null, grid: null, line: null },
+    areaStyle: { fillOpacity: 0.5 },
+    legend: { position: "top-right", itemName: { style: { fontSize: 10 } } },
+    tooltip: { showMarkers: false }
+  };
+
+  // Chart 2: Mục bán chạy - 3 sản phẩm phổ biến nhất dạng sóng
+  const productWaves = [
+    { month: "T1", product: "Giày Thể Thao", sales: 120 },
+    { month: "T1", product: "Áo Thun", sales: 80 },
+    { month: "T1", product: "Balo", sales: 40 },
+    { month: "T2", product: "Giày Thể Thao", sales: 130 },
+    { month: "T2", product: "Áo Thun", sales: 90 },
+    { month: "T2", product: "Balo", sales: 45 },
+    { month: "T3", product: "Giày Thể Thao", sales: 110 },
+    { month: "T3", product: "Áo Thun", sales: 105 },
+    { month: "T3", product: "Balo", sales: 60 },
+    { month: "T4", product: "Giày Thể Thao", sales: 140 },
+    { month: "T4", product: "Áo Thun", sales: 110 },
+    { month: "T4", product: "Balo", sales: 70 },
+    { month: "T5", product: "Giày Thể Thao", sales: 160 },
+    { month: "T5", product: "Áo Thun", sales: 130 },
+    { month: "T5", product: "Balo", sales: 90 },
+  ];
+
+  const productConfig = {
+    data: productWaves,
+    xField: "month",
+    yField: "sales",
+    colorField: "product",
+    shapeField: "smooth",
+    smooth: true,
+    height: 120,
+    autoFit: true,
+    color: ["#f97316", "#3b82f6", "#10b981"], // Orange, Blue, Green
+    xAxis: { label: { style: { fontSize: 10 } }, line: null, tickLine: null, grid: null },
+    yAxis: { label: null, grid: null, line: null },
+    areaStyle: { fillOpacity: 0.6 },
+    legend: { position: "top", layout: "horizontal", itemName: { style: { fontSize: 10 } } },
+    tooltip: { showMarkers: false }
+  };
+
+  return (
   <section style={{ padding: "80px 48px", background: "white" }}>
     <div style={{ textAlign: "center", marginBottom: 40 }}>
        <span style={{
           display: "inline-block", padding: "6px 20px", borderRadius: 999, fontSize: 14, fontWeight: 600,
-          background: "rgba(139, 92, 246, 0.1)", color: "var(--ai-purple)", border: "1px solid rgba(139, 92, 246, 0.2)", marginBottom: 16
+          background: "rgba(239, 68, 68, 0.1)", color: "var(--ai-purple)", border: "1px solid rgba(239, 68, 68, 0.2)", marginBottom: 16
         }}>
           Tính Năng Nổi Bật
         </span>
@@ -85,17 +177,17 @@ const AIFeaturesSection = () => (
     
     <Row gutter={[24, 24]} align="stretch" justify="center">
       <Col xs={24} md={8}>
-        <div style={{ background: "rgba(139, 92, 246, 0.05)", border: "1px solid rgba(139, 92, 246, 0.1)", borderRadius: 24, padding: 32, height: "100%", display: "flex", flexDirection: "column", transition: "all 0.3s ease" }} className="hover:shadow-lg">
-          <div style={{ width: 56, height: 56, background: "white", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, marginBottom: 24, boxShadow: "0 4px 12px rgba(139, 92, 246, 0.1)" }}>🤖</div>
+        <div style={{ background: "rgba(239, 68, 68, 0.05)", border: "1px solid rgba(239, 68, 68, 0.1)", borderRadius: 24, padding: 32, height: "100%", display: "flex", flexDirection: "column", transition: "all 0.3s ease" }} className="hover:shadow-lg">
+          <div style={{ width: 56, height: 56, background: "white", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, marginBottom: 24, boxShadow: "0 4px 12px rgba(239, 68, 68, 0.1)" }}>🤖</div>
           <h3 style={{ color: "var(--text-main)", fontWeight: 800, fontSize: 22, margin: "0 0 12px" }}>AI Recommendation</h3>
           <p style={{ color: "var(--text-muted)", lineHeight: 1.7, flex: 1, margin: 0 }}>Kết hợp Content-based và Collaborative Filtering để gợi ý sản phẩm phù hợp 100% với sở thích của bạn.</p>
           <div style={{ marginTop: 24 }}>
-             <span className="text-gradient-ai" style={{ background: "white", fontWeight: 700, fontSize: 14, padding: "8px 16px", borderRadius: 999, boxShadow: "0 2px 8px rgba(139, 92, 246, 0.15)" }}>✦ 99.2% Accuracy</span>
+             <span className="text-gradient-ai" style={{ background: "white", fontWeight: 700, fontSize: 14, padding: "8px 16px", borderRadius: 999, boxShadow: "0 2px 8px rgba(239, 68, 68, 0.15)" }}>99.2% Accuracy</span>
           </div>
         </div>
       </Col>
       <Col xs={24} md={8}>
-        <div className="bg-gradient-ai" style={{ borderRadius: 24, height: "100%", minHeight: 320, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 32, boxShadow: "0 10px 30px rgba(236, 72, 153, 0.2)" }}>
+        <div className="bg-gradient-ai" style={{ borderRadius: 24, height: "100%", minHeight: 320, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 32, boxShadow: "0 10px 30px rgba(249, 115, 22, 0.2)" }}>
            <div style={{ display: "flex", justifyContent: "flex-start" }}>
               <span style={{ background: "rgba(255,255,255,0.2)", backdropFilter: "blur(4px)", color: "white", fontSize: 13, fontWeight: 600, padding: "6px 14px", borderRadius: 999 }}>✉ Smart Marketing</span>
            </div>
@@ -109,22 +201,27 @@ const AIFeaturesSection = () => (
       <Col xs={24} md={8}>
         <div style={{ borderRadius: 24, padding: 32, background: "white", border: "1px solid var(--border-color)", height: "100%", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
-             <div style={{ width: 56, height: 56, background: "rgba(13, 148, 136, 0.1)", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, color: "var(--brand-teal)" }}>📈</div>
+             <div style={{ width: 56, height: 56, background: "rgba(234, 88, 12, 0.1)", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, color: "var(--brand-teal)" }}>📈</div>
              <h3 style={{ fontWeight: 800, fontSize: 22, color: "var(--text-main)", margin: 0 }}>Business Insights</h3>
           </div>
-          <p style={{ color: "var(--text-muted)", lineHeight: 1.7, flex: 1, margin: "0 0 24px" }}>Hệ thống phân tích dữ liệu mua hàng và đề xuất chiến lược tối ưu lợi nhuận.</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {["Doanh thu tăng 40%", "Tỉ lệ chuyển đổi +25%", "Chi phí giảm 30%"].map((stat) => (
-              <div key={stat} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "var(--text-main)", fontWeight: 500, background: "var(--bg-main)", padding: "10px 16px", borderRadius: 12 }}>
-                <span style={{ color: "var(--brand-teal)", fontWeight: 800 }}>✓</span> {stat}
-              </div>
-            ))}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ background: "var(--bg-main)", padding: "12px 16px", borderRadius: 16 }}>
+               <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-main)", marginBottom: 4, display: "flex", justifyContent: "space-between" }}>
+                 <span>Phân Bố Khách Hàng</span>
+               </div>
+               <Area {...demoConfig} />
+            </div>
+            <div style={{ background: "var(--bg-main)", padding: "12px 16px", borderRadius: 16 }}>
+               <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-main)", marginBottom: 4 }}>Top 3 Bán Chạy</div>
+               <Area {...productConfig} />
+            </div>
           </div>
         </div>
       </Col>
     </Row>
   </section>
-);
+  );
+};
 
 const testimonials = [
   { initials: "MA", name: "Nguyễn Minh Anh", role: "Shopper", color: "#8B5CF6", text: "AI gợi ý sản phẩm cực kỳ chính xác! Tôi đã tìm được đúng tai nghe mình cần chỉ sau 2 phút.", stars: 5 },
@@ -137,7 +234,7 @@ const TestimonialsSection = () => (
      <div style={{ textAlign: "center", marginBottom: 40 }}>
          <span style={{
           display: "inline-block", padding: "6px 20px", borderRadius: 999, fontSize: 14, fontWeight: 600,
-          background: "rgba(13, 148, 136, 0.1)", color: "var(--brand-teal)", border: "1px solid rgba(13, 148, 136, 0.2)", marginBottom: 16
+          background: "rgba(234, 88, 12, 0.1)", color: "var(--brand-teal)", border: "1px solid rgba(234, 88, 12, 0.2)", marginBottom: 16
         }}>
           Đánh Giá Thực Tế
         </span>
@@ -167,18 +264,18 @@ const CTASection = () => {
   const navigate = useNavigate();
   return (
     <section>
-       <div style={{ margin: "0 48px 80px", borderRadius: 32, background: "linear-gradient(135deg, var(--text-main), #1e293b)", padding: "72px 48px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+       <div style={{ margin: "0 48px 80px", borderRadius: 32, background: "linear-gradient(135deg, #fff7ed, #ffedd5)", padding: "72px 48px", textAlign: "center", position: "relative", overflow: "hidden", border: "1px solid rgba(249, 115, 22, 0.2)" }}>
           {/* Subtle gradient blob behind text */}
-          <div style={{ position: "absolute", top: "-50%", left: "50%", transform: "translate(-50%, 0)", width: 600, height: 600, background: "radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(0,0,0,0) 70%)", zIndex: 0 }} />
+          <div style={{ position: "absolute", top: "-50%", left: "50%", transform: "translate(-50%, 0)", width: 600, height: 600, background: "radial-gradient(circle, rgba(239,68,68,0.1) 0%, rgba(255,255,255,0) 70%)", zIndex: 0 }} />
           <div style={{ position: "relative", zIndex: 1 }}>
-            <h2 style={{ color: "white", fontSize: 48, fontWeight: 900, margin: "0 0 16px" }}>Sẵn Sàng Mua Sắm Thông Minh?</h2>
+            <h2 style={{ color: "var(--text-main)", fontSize: 48, fontWeight: 900, margin: "0 0 16px" }}>Sẵn Sàng Mua Sắm Thông Minh?</h2>
             <p style={{ color: "var(--text-muted)", fontSize: 18, margin: "0 auto 40px", maxWidth: 600 }}>Tạo tài khoản ngay hôm nay và trải nghiệm tính năng phân tích sở thích cá nhân hóa miễn phí.</p>
-            <Button size="large" onClick={() => navigate("/register")} className="bg-gradient-ai" style={{ border: "none", color: "white", borderRadius: 999, fontWeight: 700, height: 56, padding: "0 48px", fontSize: 18, marginBottom: 48, boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.4)" }}>
+            <Button size="large" onClick={() => navigate("/register")} className="bg-gradient-ai" style={{ border: "none", color: "white", borderRadius: 999, fontWeight: 700, height: 56, padding: "0 48px", fontSize: 18, marginBottom: 48, boxShadow: "0 10px 25px -5px rgba(249, 115, 22, 0.4)" }}>
               Bắt Đầu Trải Nghiệm AI
             </Button>
             <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
               {["Google Gemini", "React 18", "Node.js", "MongoDB"].map((tech) => (
-                <span key={tech} style={{ color: "var(--text-muted)", fontWeight: 600, fontSize: 14, padding: "8px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" }}>{tech}</span>
+                <span key={tech} style={{ color: "var(--brand-teal)", fontWeight: 700, fontSize: 14, padding: "8px 20px", borderRadius: 999, border: "1px solid rgba(249, 115, 22, 0.2)", background: "rgba(255, 255, 255, 0.5)" }}>{tech}</span>
               ))}
             </div>
           </div>
@@ -212,8 +309,8 @@ const Home = () => {
               <h2 style={{ margin: 0, fontSize: 32, fontWeight: 900, color: "var(--text-main)" }}>{aiData?.message || "Gợi ý cho bạn"}</h2>
               <p style={{ margin: "8px 0 0", color: "var(--text-muted)", fontSize: 16 }}>Dựa trên sở thích và lịch sử mua sắm gần đây</p>
             </div>
-            <span className="bg-gradient-ai" style={{ color: "white", fontSize: 13, fontWeight: 700, padding: "8px 16px", borderRadius: 999, display: "inline-flex", alignItems: "center", gap: 6 }}>
-               <span>✦</span> AI Analyzed
+            <span className="bg-gradient-ai" style={{ color: "white", fontSize: 13, fontWeight: 700, padding: "8px 16px", borderRadius: 999, display: "inline-flex", alignItems: "center", gap: 6, boxShadow: "0 4px 12px rgba(249, 115, 22, 0.3)" }}>
+               AI Analyzed
             </span>
           </div>
           {aiLoading ? <div style={{ textAlign: "center", padding: 60 }}><Spin size="large" /></div> : (

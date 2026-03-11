@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { sendWelcomeEmail } = require("../services/marketing.service");
+const { createNotification } = require("./notification.controller");
 
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE || "7d" });
@@ -23,11 +24,19 @@ const register = async (req, res) => {
     // Gửi email chào mừng (không block response)
     sendWelcomeEmail(user).catch(console.error);
 
+    // Thông báo chào mừng
+    createNotification(user._id, {
+      type: "system",
+      title: "Chào mừng đến với SmartShop AI! 👋",
+      message: `Xin chào ${user.name}! Tài khoản của bạn đã được tạo thành công. Khám phá cửa hàng và nhận gợi ý sản phẩm từ AI ngay hôm nay.`,
+      link: "/shop",
+    });
+
     res.status(201).json({
       success: true,
       message: "Đăng ký thành công",
       token,
-      user: { _id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar },
+      user: { _id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar, dob: user.dob, gender: user.gender },
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -51,7 +60,7 @@ const login = async (req, res) => {
       success: true,
       message: "Đăng nhập thành công",
       token,
-      user: { _id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar },
+      user: { _id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar, dob: user.dob, gender: user.gender },
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -68,10 +77,10 @@ const getMe = async (req, res) => {
 // @route PUT /api/auth/profile
 const updateProfile = async (req, res) => {
   try {
-    const { name, phone, address, preferences } = req.body;
+    const { name, phone, address, preferences, avatar, dob, gender } = req.body;
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { name, phone, address, preferences },
+      { name, phone, address, preferences, avatar, dob, gender },
       { new: true, runValidators: true }
     ).select("-password");
     res.json({ success: true, user });

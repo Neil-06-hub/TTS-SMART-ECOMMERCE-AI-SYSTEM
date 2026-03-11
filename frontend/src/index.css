@@ -7,11 +7,11 @@
 }
 
 :root {
-  /* Colors - Demo UI Theme */
-  --ai-purple: #8B5CF6;
-  --ai-pink: #EC4899;
-  --brand-teal: #0D9488;
-  --brand-teal-light: #14B8A6;
+  /* Colors - Lighter Red/Orange Theme */
+  --ai-purple: #f87171; /* Lighter Red */
+  --ai-pink: #fb923c; /* Lighter Orange */
+  --brand-teal: #f97316; /* Orange */
+  --brand-teal-light: #fdba74; /* Very Light Orange */
   --text-main: #111827;
   --text-muted: #6B7280;
   --bg-main: #F8FAFC;
@@ -24,6 +24,7 @@ body {
   background: var(--bg-main);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
+  zoom: 1.15; /* Tăng đồng đều kích thước toàn trang (gần tương đương +10px cho các thành phần cơ bản) */
 }
 
 .container {

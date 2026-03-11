@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Input, Button, Card, Radio, Row, Col, Typography, Divider, message, Result, Space } from "antd";
+import { Form, Input, Button, Radio, Row, Col, Typography, message, Space } from "antd";
 import { CreditCardOutlined, CarOutlined, WalletOutlined, CheckCircleOutlined, ThunderboltFilled, SafetyCertificateOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { orderAPI } from "../api";
@@ -13,13 +13,10 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [discountCode, setDiscountCode] = useState("");
-
   const formatPrice = (p) => new Intl.NumberFormat("vi-VN").format(p) + "đ";
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const shippingFee = subtotal >= 500000 ? 0 : 30000;
-  const discount = 0; // Áp dụng discount code sau
-  const total = subtotal + shippingFee - discount;
+  const total = subtotal + shippingFee;
 
   const onFinish = async (values) => {
     if (items.length === 0) {
@@ -37,7 +34,6 @@ const Checkout = () => {
         },
         paymentMethod: values.paymentMethod,
         note: values.note,
-        discount,
       };
       await orderAPI.create(orderData);
       clearCart();
@@ -198,11 +194,6 @@ const Checkout = () => {
                   )}
                 </div>
                 
-                {/* Promo Code section */}
-                <div style={{ display: "flex", gap: 12, marginBottom: 24, padding: "24px 0", borderTop: "1px dashed var(--border-color)", borderBottom: "1px dashed var(--border-color)" }}>
-                   <Input placeholder="Nhập mã ưu đãi (nếu có)" size="large" style={{ borderRadius: 10 }} value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} />
-                   <Button size="large" style={{ borderRadius: 10, fontWeight: 600, color: "var(--brand-teal)", borderColor: "var(--brand-teal)" }}>Áp Dụng</Button>
-                </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 24 }}>
                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -224,7 +215,7 @@ const Checkout = () => {
                    </div>
                 </div>
                 
-                <Button className="hidden lg:block" type="primary" block size="large" loading={loading} onClick={() => form.submit()} style={{ height: 60, borderRadius: 16, background: "var(--brand-teal)", border: "none", fontWeight: 800, fontSize: 16, boxShadow: "0 8px 16px rgba(13, 148, 136, 0.2)" }}>
+                <Button className="hidden lg:block" type="primary" block size="large" loading={loading} onClick={() => form.submit()} style={{ height: 60, borderRadius: 16, background: "var(--brand-teal)", border: "none", fontWeight: 800, fontSize: 16, boxShadow: "0 8px 16px rgba(234, 88, 12, 0.2)" }}>
                   Xác Nhận & Đặt Hàng
                 </Button>
                 <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: 12, marginTop: 16 }}>Nhấn "Đặt Hàng" đồng nghĩa với việc bạn chấp nhận <a href="#" style={{ color: "var(--brand-teal)" }}>Điều Kiện & Điều Khoản</a> của chúng tôi.</p>

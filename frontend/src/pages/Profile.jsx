@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Form, Input, Button, Card, Row, Col, Avatar, Tag, Typography, message, Tabs } from "antd";
-import { UserOutlined, LockOutlined, SaveOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Card, Row, Col, Avatar, Tag, Typography, message, Tabs, DatePicker, Select, Upload } from "antd";
+import { UserOutlined, LockOutlined, SaveOutlined, CameraOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 import { useAuthStore } from "../store/useStore";
 import { authAPI } from "../api";
 
@@ -11,11 +12,19 @@ const Profile = () => {
   const [profileForm] = Form.useForm();
   const [passForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || "");
 
   const handleUpdateProfile = async (values) => {
     setLoading(true);
     try {
-      const { data } = await authAPI.updateProfile(values);
+      const payload = {
+        ...values,
+        dob: values.dob ? values.dob.format("YYYY-MM-DD") : null,
+        preferences: values.preferences
+          ? (typeof values.preferences === "string" ? values.preferences.split(",").map((s) => s.trim()) : values.preferences)
+          : [],
+      };
+      const { data } = await authAPI.updateProfile(payload);
       updateUser(data.user);
       message.success("Cập nhật thông tin thành công!");
     } catch (err) {
@@ -38,6 +47,32 @@ const Profile = () => {
     }
   };
 
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  };
+
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp';
+    if (!isJpgOrPng) {
+      message.error('Chỉ được phép upload file JPG/PNG/WEBP!');
+      return false;
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Hình ảnh phải nhỏ hơn 2MB!');
+      return false;
+    }
+
+    getBase64(file, (url) => {
+      setAvatarPreview(url);
+      profileForm.setFieldsValue({ avatar: url });
+    });
+
+    return false; // Ngăn chặn AntD tự động gọi HTTP request (sẽ gửi data base64 lúc submit form)
+  };
+
   const tabItems = [
     {
       key: "info",
@@ -47,20 +82,50 @@ const Profile = () => {
           form={profileForm}
           onFinish={handleUpdateProfile}
           layout="vertical"
-          initialValues={{ name: user?.name, phone: user?.phone, address: user?.address }}
+          initialValues={{
+             name: user?.name,
+             phone: user?.phone,
+             address: user?.address,
+             avatar: user?.avatar,
+             gender: user?.gender,
+             dob: user?.dob ? dayjs(user.dob) : null,
+             preferences: user?.preferences ? user.preferences.join(", ") : ""
+          }}
         >
           <Row gutter={16}>
-            <Col xs={24} sm={12}>
-              <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
-                <Input prefix={<UserOutlined />} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item name="phone" label="Số điện thoại">
-                <Input />
-              </Form.Item>
-            </Col>
+             <Col xs={24} sm={12}>
+               <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
+                 <Input prefix={<UserOutlined />} />
+               </Form.Item>
+             </Col>
+             <Col xs={24} sm={12}>
+               <Form.Item name="phone" label="Số điện thoại">
+                 <Input />
+               </Form.Item>
+             </Col>
           </Row>
+          
+          <Row gutter={16}>
+             <Col xs={24} sm={12}>
+               <Form.Item name="dob" label="Ngày sinh">
+                 <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" placeholder="Chọn ngày sinh" />
+               </Form.Item>
+             </Col>
+             <Col xs={24} sm={12}>
+               <Form.Item name="gender" label="Giới tính">
+                 <Select placeholder="Chọn giới tính" allowClear>
+                    <Select.Option value="Nam">Nam</Select.Option>
+                    <Select.Option value="Nữ">Nữ</Select.Option>
+                    <Select.Option value="Khác">Khác</Select.Option>
+                 </Select>
+               </Form.Item>
+             </Col>
+          </Row>
+
+          <Form.Item name="avatar" hidden>
+             <Input />
+          </Form.Item>
+
           <Form.Item name="address" label="Địa chỉ">
             <Input.TextArea rows={2} />
           </Form.Item>
@@ -115,7 +180,19 @@ const Profile = () => {
       <Row gutter={[24, 24]}>
         <Col xs={24} md={8}>
           <Card style={{ borderRadius: 12, textAlign: "center" }}>
-            <Avatar size={100} icon={<UserOutlined />} src={user?.avatar} style={{ background: "#667eea", marginBottom: 16 }} />
+            <Upload
+               name="avatar"
+               showUploadList={false}
+               beforeUpload={beforeUpload}
+               accept="image/*"
+            >
+               <div style={{ position: "relative", display: "inline-block", cursor: "pointer" }} className="group">
+                 <Avatar size={100} icon={<UserOutlined />} src={avatarPreview || user?.avatar} style={{ background: "#667eea", marginBottom: 16, transition: "filter 0.3s" }} className="group-hover:brightness-75" />
+                 <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)", color: "white", fontSize: 24, opacity: 0, transition: "opacity 0.3s" }} className="group-hover:opacity-100">
+                    <CameraOutlined />
+                 </div>
+               </div>
+            </Upload>
             <Title level={4} style={{ margin: 0 }}>{user?.name}</Title>
             <Text type="secondary">{user?.email}</Text>
             <div style={{ marginTop: 12 }}>

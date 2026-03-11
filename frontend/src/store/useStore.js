@@ -71,3 +71,43 @@ export const useCartStore = create(
     { name: "cart-storage" }
   )
 );
+
+// ===================== WISHLIST STORE =====================
+export const useWishlistStore = create(
+  persist(
+    (set, get) => ({
+      items: [], // array of productIds (string)
+
+      setItems: (ids) => set({ items: ids.map((id) => id.toString()) }),
+
+      toggle: (productId) => {
+        const id = productId.toString();
+        const items = get().items;
+        if (items.includes(id)) {
+          set({ items: items.filter((i) => i !== id) });
+        } else {
+          set({ items: [...items, id] });
+        }
+      },
+
+      addItem: (productId) => {
+        const id = productId.toString();
+        if (!get().items.includes(id)) set({ items: [...get().items, id] });
+      },
+
+      removeItem: (productId) => {
+        const id = productId.toString();
+        set({ items: get().items.filter((i) => i !== id) });
+      },
+
+      isWishlisted: (productId) => get().items.includes(productId?.toString()),
+
+      clearWishlist: () => set({ items: [] }),
+
+      get totalItems() {
+        return get().items.length;
+      },
+    }),
+    { name: "wishlist-storage" }
+  )
+);

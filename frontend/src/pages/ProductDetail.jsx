@@ -112,7 +112,7 @@ const ProductDetail = () => {
                     <div style={{ color: "var(--brand-teal)", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: 1 }}>{product.category || "Danh mục"}</div>
                     {isAuthenticated && (
                        <Tooltip title="AI đánh giá sản phẩm này phù hợp với sở thích của bạn">
-                         <div className="bg-gradient-ai" style={{ color: "white", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999, display: "flex", alignItems: "center", gap: 6, boxShadow: "0 4px 12px rgba(236, 72, 153, 0.2)" }}>
+                         <div className="bg-gradient-ai" style={{ color: "white", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999, display: "flex", alignItems: "center", gap: 6, boxShadow: "0 4px 12px rgba(249, 115, 22, 0.2)" }}>
                             <ThunderboltFilled /> 95% Độ tin cậy AI
                          </div>
                        </Tooltip>
@@ -138,9 +138,24 @@ const ProductDetail = () => {
                    {discount > 0 && <span style={{ color: "#EF4444", fontSize: 14, fontWeight: 600, marginTop: 8, display: "inline-block" }}>Tiết kiệm được {formatPrice(product.originalPrice - product.price)}</span>}
                  </div>
 
-                 <Paragraph style={{ color: "var(--text-muted)", fontSize: 16, lineHeight: 1.6, marginBottom: 32 }}>
+                 <Paragraph style={{ color: "var(--text-muted)", fontSize: 16, lineHeight: 1.6, marginBottom: 24 }}>
                     {product.description || "Chưa có thông tin mô tả chi tiết cho sản phẩm này."}
                  </Paragraph>
+
+                 {/* Specifications */}
+                 {product.specs && product.specs.length > 0 && (
+                   <div style={{ marginBottom: 32, background: "var(--bg-main)", padding: 20, borderRadius: 16, border: "1px solid var(--border-color)" }}>
+                     <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-main)", margin: "0 0 16px" }}>Thông số kỹ thuật</h3>
+                     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                       {product.specs.map((spec, idx) => (
+                         <div key={idx} style={{ display: "flex", justifyContent: "space-between", paddingBottom: 12, borderBottom: idx !== product.specs.length - 1 ? "1px dashed var(--border-color)" : "none" }}>
+                           <span style={{ color: "var(--text-muted)", fontSize: 14 }}>{spec.name}</span>
+                           <span style={{ color: "var(--text-main)", fontWeight: 600, fontSize: 14, textAlign: "right", maxWidth: "60%" }}>{spec.value}</span>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                 )}
 
                  {/* Tags */}
                  {product.tags && product.tags.length > 0 && (
@@ -173,7 +188,7 @@ const ProductDetail = () => {
                            <Button
                              size="large" type="primary"
                              onClick={() => { handleAddToCart(); navigate("/checkout"); }}
-                             style={{ flex: 1, height: 56, borderRadius: 12, background: "var(--brand-teal)", border: "none", fontWeight: 700, fontSize: 16, boxShadow: "0 8px 16px rgba(13, 148, 136, 0.2)" }}
+                             style={{ flex: 1, height: 56, borderRadius: 12, background: "var(--brand-teal)", border: "none", fontWeight: 700, fontSize: 16, boxShadow: "0 8px 16px rgba(234, 88, 12, 0.2)" }}
                              className="hover:bg-teal-500 hover:-translate-y-1 transition-all"
                            >
                              Mua Ngay
@@ -239,7 +254,7 @@ const ProductDetail = () => {
                         <div key={r._id} style={{ padding: 24, background: "var(--bg-main)", borderRadius: 16, border: "1px solid var(--border-color)" }}>
                           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12 }}>
                             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                               <Avatar size={48} style={{ background: "linear-gradient(135deg, #7C3AED, #06B6D4)", fontWeight: 700 }}>{r.name.charAt(0)}</Avatar>
+                               <Avatar size={48} style={{ background: "linear-gradient(135deg, var(--ai-purple), var(--ai-pink))", fontWeight: 700 }}>{r.name.charAt(0)}</Avatar>
                                <div>
                                  <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text-main)", marginBottom: 4 }}>{r.name}</div>
                                  <Rate disabled defaultValue={r.rating} style={{ fontSize: 12, color: "#F59E0B" }} />
@@ -268,7 +283,7 @@ const ProductDetail = () => {
         {similar?.length > 0 && (
           <div style={{ marginTop: 64 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
-              <div className="bg-gradient-ai" style={{ width: 44, height: 44, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: 20, boxShadow: "0 4px 12px rgba(236, 72, 153, 0.3)" }}>
+              <div className="bg-gradient-ai" style={{ width: 44, height: 44, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: 20, boxShadow: "0 4px 12px rgba(249, 115, 22, 0.3)" }}>
                   <ThunderboltFilled />
                </div>
               <Title level={3} style={{ margin: 0, fontWeight: 800, color: "var(--text-main)" }}>Gợi Ý Thông Minh</Title>

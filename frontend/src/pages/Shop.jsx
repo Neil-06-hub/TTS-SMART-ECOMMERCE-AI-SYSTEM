@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Row, Col, Select, Slider, Button, Spin, Pagination, Empty, Switch, Tag } from "antd";
-import { AppstoreOutlined, BarsOutlined, HomeOutlined, ThunderboltFilled } from "@ant-design/icons";
+import { Row, Col, Select, Slider, Button, Spin, Pagination, Empty, Switch, Tag, Input } from "antd";
+import { AppstoreOutlined, BarsOutlined, HomeOutlined, ThunderboltFilled, SearchOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { productAPI, aiAPI } from "../api";
 import { useAuthStore } from "../store/useStore";
 import ProductCard from "../components/product/ProductCard";
@@ -10,6 +11,7 @@ const { Option } = Select;
 
 const Shop = () => {
   const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({ page: 1, limit: 12, search: "", category: "", sort: "newest", minPrice: 0, maxPrice: 10000000 });
   const [gridView, setGridView] = useState(true);
   const [aiEnabled, setAiEnabled] = useState(true);
@@ -44,9 +46,18 @@ const Shop = () => {
       <div className="container" style={{ maxWidth: 1440 }}>
         <Row gutter={[24, 24]}>
 
-          {/* ── Left Sidebar (Filters) ── */}
           <Col xs={24} lg={5}>
             <div style={{ background: "white", borderRadius: 20, padding: 24, boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", position: "sticky", top: 80, border: "1px solid var(--border-color)" }}>
+              {/* Search */}
+              <p style={{ color: "var(--text-main)", fontSize: 13, fontWeight: 800, letterSpacing: 0.5, marginBottom: 16, textTransform: "uppercase" }}>Tìm Kiếm</p>
+              <Input
+                placeholder="Tên sản phẩm..."
+                prefix={<SearchOutlined style={{ color: "var(--text-muted)" }} />}
+                value={filters.search}
+                onChange={(e) => handleFilter("search", e.target.value)}
+                style={{ marginBottom: 28, borderRadius: 12, height: 44 }}
+              />
+
               {/* Category */}
               <p style={{ color: "var(--text-main)", fontSize: 13, fontWeight: 800, letterSpacing: 0.5, marginBottom: 16, textTransform: "uppercase" }}>Danh Mục</p>
               <div style={{ marginBottom: 28 }}>
@@ -196,8 +207,8 @@ const Shop = () => {
                   aiData.products.slice(0, 5).map((product, i) => {
                     const match = [98, 94, 89, 87, 82][i] || 80;
                     return (
-                      <div key={product._id} style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16, cursor: "pointer", padding: 8, borderRadius: 12, transition: "background 0.2s" }} className="hover:bg-slate-50">
-                        <img src={product.image || "https://placehold.co/100x100"} alt={product.name} style={{ width: 64, height: 64, borderRadius: 10, objectFit: "cover", background: "var(--bg-main)", flexShrink: 0, border: "1px solid var(--border-color)" }} />
+                      <div key={product._id} onClick={() => navigate(`/products/${product._id}`)} style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 16, cursor: "pointer", padding: 8, borderRadius: 12, transition: "background 0.2s" }} className="hover:bg-slate-50">
+                        <img src={product.image || "https://placehold.co/100x100"} alt={product.name} style={{ width: 64, height: 64, borderRadius: 10, objectFit: "cover", background: "white", flexShrink: 0, border: "1px solid var(--border-color)" }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-main)", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", marginBottom: 2 }}>{product.name}</div>
                           <div style={{ color: "var(--brand-teal)", fontWeight: 800, fontSize: 14, marginBottom: 4 }}>{new Intl.NumberFormat("vi-VN").format(product.price)}đ</div>

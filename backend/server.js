@@ -22,6 +22,8 @@ app.use("/api/products", require("./routes/product.routes"));
 app.use("/api/orders", require("./routes/order.routes"));
 app.use("/api/ai", require("./routes/ai.routes"));
 app.use("/api/admin", require("./routes/admin.routes"));
+app.use("/api/wishlist", require("./routes/wishlist.routes"));
+app.use("/api/notifications", require("./routes/notification.routes"));
 
 // Health check
 app.get("/api/health", (req, res) => res.json({ status: "OK", message: "Smart Ecommerce API is running" }));

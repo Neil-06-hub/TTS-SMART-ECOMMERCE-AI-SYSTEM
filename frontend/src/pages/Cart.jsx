@@ -80,7 +80,7 @@ const Cart = () => {
           </div>
           <Title level={3} style={{ color: "var(--text-main)", marginBottom: 12, fontWeight: 800 }}>Giỏ Hàng Trống</Title>
           <p style={{ color: "var(--text-muted)", fontSize: 15, marginBottom: 32 }}>Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy cùng khám phá sắm ngay nhé!</p>
-          <Button type="primary" size="large" onClick={() => navigate("/shop")} style={{ background: "var(--brand-teal)", border: "none", height: 56, padding: "0 40px", borderRadius: 14, fontWeight: 700, fontSize: 16, boxShadow: "0 8px 16px rgba(13, 148, 136, 0.2)" }} className="hover:-translate-y-1 transition-all">
+          <Button type="primary" size="large" onClick={() => navigate("/shop")} style={{ background: "var(--brand-teal)", border: "none", height: 56, padding: "0 40px", borderRadius: 14, fontWeight: 700, fontSize: 16, boxShadow: "0 8px 16px rgba(234, 88, 12, 0.2)" }} className="hover:-translate-y-1 transition-all">
             Tiếp Tục Mua Sắm
           </Button>
         </div>
@@ -158,8 +158,8 @@ const Cart = () => {
               <Button
                 type="primary" block size="large" icon={<ArrowRightOutlined />}
                 onClick={handleCheckout}
-                style={{ height: 56, borderRadius: 14, background: "var(--brand-teal)", border: "none", fontWeight: 700, fontSize: 16, boxShadow: "0 8px 16px rgba(13, 148, 136, 0.2)" }}
-                className="hover:bg-teal-500 hover:-translate-y-1 transition-all"
+                style={{ height: 56, borderRadius: 14, background: "var(--brand-teal)", border: "none", fontWeight: 700, fontSize: 16, boxShadow: "0 8px 16px rgba(234, 88, 12, 0.2)" }}
+                className="hover:-translate-y-1 transition-all"
               >
                 Tiến Hành Thanh Toán
               </Button>

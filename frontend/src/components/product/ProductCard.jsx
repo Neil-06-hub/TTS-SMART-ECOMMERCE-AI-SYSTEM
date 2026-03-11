@@ -1,13 +1,35 @@
 import { Rate, message, Tooltip } from "antd";
-import { HeartOutlined, ShoppingCartOutlined, ThunderboltFilled } from "@ant-design/icons";
+import { HeartOutlined, HeartFilled, ShoppingCartOutlined, ThunderboltFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useCartStore, useAuthStore } from "../../store/useStore";
-import { aiAPI } from "../../api";
+import { useCartStore, useAuthStore, useWishlistStore } from "../../store/useStore";
+import { aiAPI, wishlistAPI } from "../../api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const ProductCard = ({ product, matchPercent }) => {
   const navigate = useNavigate();
   const { addItem } = useCartStore();
   const { isAuthenticated } = useAuthStore();
+  const { isWishlisted, toggle } = useWishlistStore();
+  const queryClient = useQueryClient();
+
+  const wishlisted = isWishlisted(product._id);
+
+  const wishlistMutation = useMutation({
+    mutationFn: () => wishlistAPI.toggle(product._id),
+    onSuccess: (res) => {
+      toggle(product._id);
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      queryClient.invalidateQueries({ queryKey: ["wishlistIds"] });
+      message.success(res.data.added ? "Đã thêm vào yêu thích!" : "Đã xóa khỏi yêu thích");
+    },
+    onError: () => message.error("Lỗi, vui lòng thử lại"),
+  });
+
+  const handleWishlist = (e) => {
+    e.stopPropagation();
+    if (!isAuthenticated) { navigate("/login"); return; }
+    wishlistMutation.mutate();
+  };
 
   const formatPrice = (price) =>
     new Intl.NumberFormat("vi-VN").format(price) + "đ";
@@ -54,7 +76,7 @@ const ProductCard = ({ product, matchPercent }) => {
         <div style={{ position: "absolute", top: 12, left: 12, display: "flex", flexDirection: "column", gap: 8 }}>
           {matchPercent ? (
              <Tooltip title="AI khuyên dùng dựa trên sở thích của bạn">
-                <div className="bg-gradient-ai" style={{ color: "white", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999, display: "flex", alignItems: "center", gap: 4, boxShadow: "0 4px 10px rgba(236, 72, 153, 0.3)" }}>
+                <div className="bg-gradient-ai" style={{ color: "white", fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999, display: "flex", alignItems: "center", gap: 4, boxShadow: "0 4px 10px rgba(249, 115, 22, 0.3)" }}>
                   <ThunderboltFilled /> {matchPercent}% Phù hợp
                 </div>
              </Tooltip>
@@ -72,19 +94,25 @@ const ProductCard = ({ product, matchPercent }) => {
         </div>
 
         {/* Wishlist Heart */}
-        <div
-          onClick={(e) => { e.stopPropagation(); /* Add wishlist logic here later */ message.info("Đã lưu vào danh sách yêu thích"); }}
-          style={{
-            position: "absolute", top: 12, right: 12,
-            width: 36, height: 36, borderRadius: "50%",
-            background: "white", display: "flex", alignItems: "center",
-            justifyContent: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", cursor: "pointer",
-            transition: "all 0.2s ease", color: "var(--text-muted)"
-          }}
-          className="hover:text-pink-500 hover:scale-110"
-        >
-          <HeartOutlined style={{ fontSize: 18 }} />
-        </div>
+        <Tooltip title={wishlisted ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}>
+          <div
+            onClick={handleWishlist}
+            style={{
+              position: "absolute", top: 12, right: 12,
+              width: 36, height: 36, borderRadius: "50%",
+              background: "white", display: "flex", alignItems: "center",
+              justifyContent: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", cursor: "pointer",
+              transition: "all 0.2s ease",
+              color: wishlisted ? "#EF4444" : "var(--text-muted)",
+            }}
+            className="hover:scale-110"
+          >
+            {wishlisted
+              ? <HeartFilled style={{ fontSize: 18, color: "#EF4444" }} />
+              : <HeartOutlined style={{ fontSize: 18 }} />
+            }
+          </div>
+        </Tooltip>
 
         {/* Out of Stock Overlay */}
         {product.stock === 0 && (
@@ -141,9 +169,9 @@ const ProductCard = ({ product, matchPercent }) => {
                display: "flex", alignItems: "center", justifyContent: "center",
                cursor: product.stock === 0 ? "not-allowed" : "pointer", fontSize: 20,
                transition: "all 0.2s ease",
-               boxShadow: product.stock === 0 ? "none" : "0 4px 12px rgba(13, 148, 136, 0.2)",
+               boxShadow: product.stock === 0 ? "none" : "0 4px 12px rgba(234, 88, 12, 0.2)",
              }}
-             className={product.stock > 0 ? "hover:bg-teal-500 hover:-translate-y-1" : ""}
+             className={product.stock > 0 ? "hover:-translate-y-1" : ""}
            >
              <ShoppingCartOutlined />
            </button>

@@ -6,56 +6,89 @@ Tất cả HTTP calls đi qua file này. Không gọi `axios` trực tiếp tron
 
 ## Axios Instance
 ```js
-const api = axios.create({ baseURL: '/api' });
+const api = axios.create({ baseURL: '/api', timeout: 30000 });
 
-// Request interceptor: tự động đính token
+// Request interceptor: tự động đính token từ localStorage
 api.interceptors.request.use(config => {
-  const token = useAuthStore.getState().token;
+  const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+// Response interceptor: redirect /login nếu 401
 ```
 
 ## API Modules
 
 ### authAPI
 ```js
-authAPI.register(data)   // POST /auth/register
-authAPI.login(data)      // POST /auth/login
-authAPI.getProfile()     // GET  /auth/profile
+authAPI.register(data)            // POST /auth/register
+authAPI.login(data)               // POST /auth/login
+authAPI.getMe()                   // GET  /auth/me
+authAPI.updateProfile(data)       // PUT  /auth/profile
+authAPI.changePassword(data)      // PUT  /auth/change-password
 ```
 
 ### productAPI
 ```js
-productAPI.getAll(params)    // GET /products?page=&category=&search=
-productAPI.getById(id)       // GET /products/:id
-productAPI.create(formData)  // POST /products (admin, multipart)
-productAPI.update(id, data)  // PUT /products/:id (admin)
-productAPI.delete(id)        // DELETE /products/:id (admin, soft delete)
+productAPI.getAll(params)         // GET /products?page=&category=&search=&sort=
+productAPI.getById(id)            // GET /products/:id
+productAPI.getFeatured()          // GET /products/featured
+productAPI.getCategories()        // GET /products/categories
+productAPI.addReview(id, data)    // POST /products/:id/reviews
 ```
 
 ### orderAPI
 ```js
-orderAPI.create(data)        // POST /orders
-orderAPI.getMyOrders()       // GET /orders/my
-orderAPI.getAll()            // GET /orders (admin)
-orderAPI.updateStatus(id, status) // PUT /orders/:id/status (admin)
+orderAPI.create(data)             // POST /orders
+orderAPI.getMy()                  // GET  /orders/my
+orderAPI.getById(id)              // GET  /orders/:id
+orderAPI.cancel(id)               // PUT  /orders/:id/cancel
 ```
 
 ### aiAPI
 ```js
-aiAPI.getRecommendations(productId)  // GET /ai/recommendations/:id
-aiAPI.getAnalysis()                  // GET /ai/analysis (admin)
+aiAPI.getRecommendations()        // GET  /ai/recommendations  → { products, type, message }
+aiAPI.trackActivity(data)         // POST /ai/track  → { productId, action }
+```
+
+### wishlistAPI
+```js
+wishlistAPI.get()                 // GET    /wishlist           → { wishlist: Product[] }
+wishlistAPI.getIds()              // GET    /wishlist/ids       → { wishlistIds: string[] }
+wishlistAPI.toggle(productId)     // POST   /wishlist/:id       → { added: bool, wishlistIds }
+wishlistAPI.remove(productId)     // DELETE /wishlist/:id
+```
+
+### notificationAPI
+```js
+notificationAPI.getAll()          // GET /notifications  → { notifications, unreadCount }
+notificationAPI.readAll()         // PUT /notifications/read-all
+notificationAPI.readOne(id)       // PUT /notifications/:id/read
+notificationAPI.deleteOne(id)     // DELETE /notifications/:id
 ```
 
 ### adminAPI
 ```js
-adminAPI.getStats()               // GET /admin/stats
+// Dashboard
+adminAPI.getDashboard()           // GET /admin/dashboard
+adminAPI.getAIAnalysis()          // GET /admin/dashboard/ai-analysis
+// Products (multipart/form-data)
+adminAPI.getProducts(params)      // GET    /admin/products
+adminAPI.createProduct(formData)  // POST   /admin/products
+adminAPI.updateProduct(id, data)  // PUT    /admin/products/:id
+adminAPI.deleteProduct(id)        // DELETE /admin/products/:id
+// Orders
+adminAPI.getOrders(params)        // GET /admin/orders
+adminAPI.updateOrderStatus(id, data) // PUT /admin/orders/:id/status
+// Users
 adminAPI.getUsers()               // GET /admin/users
-adminAPI.sendMarketing(data)      // POST /admin/marketing/send
-adminAPI.getMarketingLogs()       // GET /admin/marketing/logs
+// Marketing
+adminAPI.getMarketingLogs(params) // GET  /admin/marketing/logs
+adminAPI.triggerMarketing(type)   // POST /admin/marketing/trigger
 ```
 
 ## Error Handling
 API errors trả về `{ success: false, message: '...' }`.
 React Query tự catch và expose qua `error.response.data.message`.
+401 response → interceptor tự redirect về `/login`.
