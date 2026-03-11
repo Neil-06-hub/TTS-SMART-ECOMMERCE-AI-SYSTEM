@@ -82,7 +82,16 @@ adminAPI.deleteProduct(id)        // DELETE /admin/products/:id
 adminAPI.getOrders(params)        // GET /admin/orders
 adminAPI.updateOrderStatus(id, data) // PUT /admin/orders/:id/status
 // Users
-adminAPI.getUsers()               // GET /admin/users
+adminAPI.getUsers()               // GET    /admin/users
+adminAPI.updateUser(id, data)     // PUT    /admin/users/:id
+adminAPI.deleteUser(id)           // DELETE /admin/users/:id
+adminAPI.toggleBlockUser(id)      // PATCH  /admin/users/:id/toggle-block
+// Discounts
+adminAPI.getDiscounts()           // GET    /admin/discounts
+adminAPI.createDiscount(data)     // POST   /admin/discounts
+adminAPI.updateDiscount(id, data) // PUT    /admin/discounts/:id
+adminAPI.deleteDiscount(id)       // DELETE /admin/discounts/:id
+adminAPI.toggleDiscount(id)       // PATCH  /admin/discounts/:id/toggle
 // Marketing
 adminAPI.getMarketingLogs(params) // GET  /admin/marketing/logs
 adminAPI.triggerMarketing(type)   // POST /admin/marketing/trigger

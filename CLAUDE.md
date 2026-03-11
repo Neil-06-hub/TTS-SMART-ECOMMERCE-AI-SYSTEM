@@ -19,6 +19,8 @@ Full-stack e-commerce tích hợp AI (Google Gemini) cho gợi ý sản phẩm c
 - Admin routes bảo vệ bởi middleware `protect` + `adminOnly`
 - Wishlist: lưu trong `User.wishlist[]` (ObjectId refs), sync server ↔ `useWishlistStore` (localStorage) khi login qua `wishlistAPI.getIds()`
 - Notifications: `createNotification(userId, {type, title, message, link})` — helper export từ `notification.controller.js`
+- Discount Codes: model `DiscountCode` (type: percent/fixed, usageLimit, expiresAt), CRUD qua `/api/admin/discounts`
+- User blocking: `User.isBlocked` — middleware `protect` tự check và trả 403 nếu bị khóa
 
 ## Run Commands
 ```bash

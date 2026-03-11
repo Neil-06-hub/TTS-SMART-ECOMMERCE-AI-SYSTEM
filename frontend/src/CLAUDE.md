@@ -40,7 +40,7 @@ Tất cả API calls qua `src/api/index.js` — không import axios trực tiế
 - `/about` — Về chúng tôi (public)
 - `/cart` — Giỏ hàng (public)
 - `/checkout`, `/profile`, `/orders`, `/wishlist` — (private, cần login)
-- `/admin/*` — (private, cần role admin)
+- `/admin/dashboard`, `/admin/products`, `/admin/orders`, `/admin/users`, `/admin/discounts`, `/admin/marketing` — (private, cần role admin)
 
 ## Component Conventions
 - Ant Design components ưu tiên hơn custom HTML
