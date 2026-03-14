@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Colors - Lighter Red/Orange Theme */
+  --ai-purple: #f87171; /* Lighter Red */
+  --ai-pink: #fb923c; /* Lighter Orange */
+  --brand-teal: #f97316; /* Orange */
+  --brand-teal-light: #fdba74; /* Very Light Orange */
+  --text-main: #111827;
+  --text-muted: #6B7280;
+  --bg-main: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --border-color: #E2E8F0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  zoom: 1.15; /* Tăng đồng đều kích thước toàn trang (gần tương đương +10px cho các thành phần cơ bản) */
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Gradients */
+.bg-gradient-ai {
+  background: linear-gradient(135deg, var(--ai-purple), var(--ai-pink));
+}
+
+.text-gradient-ai {
+  background: linear-gradient(135deg, var(--ai-purple), var(--ai-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-teal {
+  background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Product card hover */
+.product-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  border-color: rgba(139, 92, 246, 0.3); /* Subtle purple glow */
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* Ant Design overrides */
+.ant-btn-primary {
+  background: var(--brand-teal) !important;
+  box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.2) !important;
+}
+.ant-btn-primary:hover {
+  background: var(--brand-teal-light) !important;
+}
+
+.ant-pagination-item-active {
+  background: var(--brand-teal) !important;
+  border-color: var(--brand-teal) !important;
+}
+.ant-pagination-item-active a {
+  color: white !important;
+}
+
+.ant-input:focus, .ant-input-focused {
+  border-color: var(--brand-teal) !important;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.1) !important;
+}
