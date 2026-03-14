@@ -1,67 +1,104 @@
 # UIGen
 
-AI-powered React component generator with live preview.
+AI-powered React component generator with live preview. Describe components in natural language, watch them get generated and previewed in real-time using Claude AI.
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 18+ (hỗ trợ Node.js 25+ với compatibility fix tự động)
 - npm
 
 ## Setup
 
-1. **Optional** Edit `.env` and add your Anthropic API key:
+1. Clone repo và tạo file `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Hoặc tạo file `.env` với nội dung:
 
 ```
 ANTHROPIC_API_KEY=your-api-key-here
 ```
 
-The project will run without an API key. Rather than using a LLM to generate components, static code will be returned instead.
+> **Note:** Project vẫn chạy được mà không cần API key — sẽ trả về static code thay vì gọi AI.
 
-2. Install dependencies and initialize database
+2. Cài đặt dependencies và khởi tạo database:
 
 ```bash
 npm run setup
 ```
 
-This command will:
-
-- Install all dependencies
+Lệnh này sẽ:
+- Cài tất cả dependencies
 - Generate Prisma client
-- Run database migrations
+- Chạy database migrations (SQLite)
 
-## Running the Application
-
-### Development
+## Commands
 
 ```bash
-npm run dev
+npm run dev        # Dev server (Turbopack) tại http://localhost:3000
+npm run build      # Build production
+npm run start      # Chạy production server
+npm run lint       # ESLint
+npm run test       # Chạy test (Vitest)
+npm run setup      # Cài đặt + Prisma generate + migrate
+npm run db:reset   # Xóa và tạo lại database
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+## Project Structure
+
+```
+src/
+├── app/                  # Next.js App Router (routes, API, layouts)
+│   ├── api/chat/         # Streaming AI chat endpoint
+│   └── [projectId]/      # Project detail page
+├── actions/              # Server actions (auth, project CRUD)
+├── components/
+│   ├── auth/             # Sign in/up forms
+│   ├── chat/             # Chat interface, message list, input
+│   ├── editor/           # Monaco code editor, file tree
+│   ├── preview/          # Live preview iframe
+│   └── ui/               # Shadcn/ui components
+├── hooks/                # Custom React hooks
+└── lib/
+    ├── contexts/         # ChatContext, FileSystemContext
+    ├── prompts/          # System prompt cho Claude
+    ├── tools/            # AI tools (str_replace_editor, file_manager)
+    ├── transform/        # JSX transformation + import map
+    ├── auth.ts           # JWT session management
+    ├── file-system.ts    # Virtual file system (in-memory)
+    └── provider.ts       # AI model provider (Claude / Mock)
+```
 
 ## Usage
 
-1. Sign up or continue as anonymous user
-2. Describe the React component you want to create in the chat
-3. View generated components in real-time preview
-4. Switch to Code view to see and edit the generated files
-5. Continue iterating with the AI to refine your components
+1. Đăng ký tài khoản hoặc sử dụng ở chế độ anonymous
+2. Mô tả React component bạn muốn tạo trong chat
+3. Xem component được generate real-time trong Preview
+4. Chuyển sang tab Code để xem và chỉnh sửa code
+5. Tiếp tục chat với AI để refine component
 
 ## Features
 
 - AI-powered component generation using Claude
 - Live preview with hot reload
-- Virtual file system (no files written to disk)
-- Syntax highlighting and code editor
-- Component persistence for registered users
-- Export generated code
+- Monaco code editor with syntax highlighting
+- Virtual file system (không ghi file ra disk)
+- Project persistence cho registered users
+- Anonymous mode — làm việc không cần đăng nhập, lưu lại khi đăng ký
 
 ## Tech Stack
 
-- Next.js 15 with App Router
-- React 19
-- TypeScript
-- Tailwind CSS v4
-- Prisma with SQLite
-- Anthropic Claude AI
-- Vercel AI SDK
+- **Next.js 15** — App Router, Server Actions, Turbopack
+- **React 19** — Latest with automatic JSX runtime
+- **TypeScript 5**
+- **Tailwind CSS v4**
+- **Prisma** — ORM với SQLite
+- **Vercel AI SDK** — Streaming AI responses
+- **@ai-sdk/anthropic** — Claude integration
+- **Monaco Editor** — Code editing
+- **Babel Standalone** — JSX transformation in browser
+- **Shadcn/ui** — UI components (Radix UI)
+- **jose** — JWT authentication
+- **bcrypt** — Password hashing
