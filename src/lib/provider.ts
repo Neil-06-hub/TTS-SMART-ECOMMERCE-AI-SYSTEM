@@ -282,30 +282,33 @@ const ContactForm = () => {
 export default ContactForm;`;
 
       case "card":
-        return `import React from 'react';
+        return `import { ArrowRight, Star } from 'lucide-react';
 
-const Card = ({ 
-  title = "Welcome to Our Service", 
-  description = "Discover amazing features and capabilities that will transform your experience.",
-  imageUrl,
-  actions 
+const Card = ({
+  title = "Welcome to Our Service",
+  description = "Discover amazing features and capabilities that will transform your workflow.",
+  badge = "Featured",
+  actions
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      {imageUrl && (
-        <img 
-          src={imageUrl} 
-          alt={title}
-          className="w-full h-48 object-cover"
-        />
-      )}
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="text-gray-600 mb-4">{description}</p>
-        {actions && (
-          <div className="mt-4">
-            {actions}
-          </div>
+    <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl shadow-violet-500/10 hover:-translate-y-0.5 transition-all duration-200">
+      <div className="p-7">
+        <div className="flex items-center justify-between mb-5">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-semibold">
+            <Star className="h-3 w-3" />
+            {badge}
+          </span>
+          <span className="text-gray-600 text-xs">v2.0</span>
+        </div>
+        <h3 className="text-2xl font-bold text-white tracking-tight mb-3">{title}</h3>
+        <p className="text-gray-400 leading-relaxed mb-6">{description}</p>
+        {actions ? (
+          <div className="mt-4">{actions}</div>
+        ) : (
+          <button className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-white py-2.5 px-4 rounded-xl font-medium transition-colors duration-150 active:scale-95">
+            Get Started
+            <ArrowRight className="h-4 w-4" />
+          </button>
         )}
       </div>
     </div>
@@ -392,16 +395,12 @@ export default Counter;`;
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <Card 
-          title="Amazing Product"
-          description="This is a fantastic product that will change your life. Experience the difference today!"
-          actions={
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-              Learn More
-            </button>
-          }
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-8">
+      <div className="w-full max-w-sm">
+        <Card
+          title="Ship faster, build better"
+          description="A focused workspace for teams who care about the details. Integrate in minutes, scale without limits."
+          badge="New"
         />
       </div>
     </div>
@@ -413,7 +412,7 @@ export default function App() {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-8">
       <div className="w-full max-w-md">
         <${componentName} />
       </div>

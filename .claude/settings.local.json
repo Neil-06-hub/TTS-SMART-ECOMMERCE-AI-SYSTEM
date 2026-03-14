@@ -7,7 +7,11 @@
       "Bash(grep:*)",
       "Bash(node:*)",
       "Bash(npx tsc:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "mcp__playwright",
+      "WebFetch(domain:localhost)",
+      "Bash(sleep:*)",
+      "mcp__playwright"
     ]
   }
 }
