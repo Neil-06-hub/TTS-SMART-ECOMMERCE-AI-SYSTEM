@@ -62,9 +62,18 @@ Two React contexts drive the app:
 
 SQLite via Prisma. Two models: `User` (email, hashed password) and `Project` (name, messages as JSON string, file system data as JSON string, optional userId). Project data is denormalized — entire file tree and conversation stored as JSON blobs.
 
+## Environment Variables
+
+- `ANTHROPIC_API_KEY` — Optional. Without it, a `MockLanguageModel` returns static responses instead of calling Claude.
+- `JWT_SECRET` — Optional. Defaults to `"development-secret-key"` (only safe for local dev).
+
 ## Path Alias
 
 `@/*` maps to `./src/*` (configured in tsconfig.json).
+
+## Middleware (`src/middleware.ts`)
+
+Protects `/api/projects` and `/api/filesystem` routes — returns 401 if no valid JWT session cookie is present. The `/api/chat` route and all page routes are not protected by middleware (auth is handled at the application level for pages).
 
 ## node-compat.cjs
 
@@ -78,4 +87,4 @@ Required via `NODE_OPTIONS` to delete `globalThis.localStorage/sessionStorage` o
 
 Tests live in `__tests__/` directories adjacent to source files. Vitest with jsdom environment, React Testing Library, and `vite-tsconfig-paths` for path resolution.
 
-The database schema is defined in @prisma/schema.prisma
+The database schema is defined in `prisma/schema.prisma`.
